@@ -1,9 +1,6 @@
 ﻿using Domain.Auth.Entities;
-using Domain.LanguagePractice.Entities;
-using Domain.LanguagePractice.ValueObjects;
 using Domain.Shared.Events;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Shared;
 
@@ -15,15 +12,9 @@ public class AppDbContext : DbContext
 
     public DbSet<User> Users => Set<User>();
 
-    public DbSet<Submission> Submissions => Set<Submission>();
-
-    public DbSet<LanguageLearner> LanguageLearners => Set<LanguageLearner>();
-
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
     public DbSet<ProcessedEvent> ProcessedEvents => Set<ProcessedEvent>();
-
-    public DbSet<LanguageAnalysis> LanguageAnalysis => Set<LanguageAnalysis>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -42,103 +33,6 @@ public class AppDbContext : DbContext
                 .IsRequired();
             entity.Property(e => e.CreatedAt)
                 .IsRequired();
-        });
-
-        // Value converter for LanguageCode
-        var languageCodeConverter = new ValueConverter<LanguageCode, string>(
-            v => v.Value,                    // To database: LanguageCode -> string
-            v => LanguageCode.From(v)        // From database: string -> LanguageCode
-        );
-
-        var nullableLanguageCodeConverter = new ValueConverter<LanguageCode?, string?>(
-            v => v != null ? v.Value : null, // To database: LanguageCode? -> string
-            v => v != null ? LanguageCode.From(v) : null // From database: string -> LanguageCode?
-        );
-
-        // Configure Submission entity
-        modelBuilder.Entity<Submission>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.LanguageCode)
-                .HasConversion(languageCodeConverter)
-                .IsRequired()
-                .HasMaxLength(10);
-            entity.Property(e => e.Text)
-                .IsRequired();
-            entity.Property(e => e.CreatedAt)
-                .IsRequired();
-
-            // Configure the relationship between Submission and User
-            entity.HasOne<User>()
-                .WithMany()
-                .HasForeignKey(e => e.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-        });
-
-        // Configure LanguageLearner entity 
-        modelBuilder.Entity<LanguageLearner>(entity =>
-        {
-            entity.HasKey(e => e.UserId);
-            entity.Property(e => e.ActiveLanguage)
-                .HasConversion(nullableLanguageCodeConverter)
-                .HasMaxLength(10);
-
-            entity.HasOne<User>()
-                .WithOne()
-                .HasForeignKey<LanguageLearner>(e => e.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            entity.OwnsMany(e => e.LemmaStatistics, statsBuilder =>
-            {
-                statsBuilder.ToTable("LearnerLemmaStatistics");
-                statsBuilder.WithOwner().HasForeignKey("LanguageLearnerId");
-
-                statsBuilder.Property(l => l.Text)
-                    .IsRequired()
-                    .HasMaxLength(255);
-
-                statsBuilder.Property(l => l.LanguageCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
-
-                statsBuilder.Property(l => l.Frequency)
-                    .IsRequired();
-
-                statsBuilder.Property(l => l.FirstUsedAt)
-                    .IsRequired();
-
-                statsBuilder.Property(l => l.LastUsedAt)
-                    .IsRequired();
-
-                statsBuilder.Property<Guid>("Id").ValueGeneratedOnAdd();
-                statsBuilder.HasKey("Id");
-            });
-
-            entity.OwnsMany(e => e.LanguageStats, statsBuilder =>
-            { 
-                statsBuilder.ToTable("LearnerLanguageStats");
-                statsBuilder.WithOwner().HasForeignKey("LanguageLearnerId");
-
-                statsBuilder.Property(l => l.LanguageCode)
-                    .HasConversion(languageCodeConverter)
-                    .IsRequired()
-                    .HasMaxLength(10);
-
-                statsBuilder.Property(l => l.TotalSubmissions)
-                    .IsRequired();
-
-                statsBuilder.Property(l => l.UniqueLemmas)
-                    .IsRequired();
-
-                statsBuilder.Property(l => l.StartedLearningAt)
-                    .IsRequired();
-
-                statsBuilder.Property(l => l.LastSubmissionAt)
-                    .IsRequired(false);
-
-                statsBuilder.HasIndex(l => new { l.LanguageCode, l.LanguageLearnerId })
-                    .IsUnique();
-            });
         });
 
         // Configure OutboxMessage entity
@@ -166,49 +60,6 @@ public class AppDbContext : DbContext
                 .HasMaxLength(200);
             entity.Property(e => e.ProcessedAt)
                 .IsRequired();
-        });
-
-        // Configure LanguageAnalysis entity
-        modelBuilder.Entity<LanguageAnalysis>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-
-            entity.Property(e => e.LanguageCode)
-                .HasConversion(languageCodeConverter)
-                .IsRequired()
-                .HasMaxLength(10);
-
-            // Configure the relationship between LanguageAnalysis and Submission
-            entity.HasOne<Submission>()
-                .WithMany()
-                .HasForeignKey(e => e.SubmissionId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // Configure the relationship between LanguageAnalysis and User
-            entity.HasOne<User>()
-                .WithMany()
-                .HasForeignKey(e => e.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            entity.Property(e => e.Status)
-                .IsRequired()
-                .HasConversion<string>()
-                .HasMaxLength(50);
-
-            entity.Property(e => e.StartedAt)
-                .IsRequired();
-
-            entity.Property(e => e.CompletedAt)
-                .IsRequired(false);
-
-            // Configure Lemmas collection as owned entities
-            entity.OwnsMany(e => e.Lemmas, tokensBuilder =>
-            {
-                tokensBuilder.ToTable("AnalysisLemmas");
-                tokensBuilder.WithOwner().HasForeignKey("LanguageAnalysisId");
-                tokensBuilder.Property<Guid>("Id").ValueGeneratedOnAdd();
-                tokensBuilder.HasKey("Id");
-            });
         });
     }
 }

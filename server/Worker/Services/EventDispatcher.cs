@@ -1,6 +1,5 @@
 ﻿using Application.Shared.Interfaces;
 using Domain.Auth.Events;
-using Domain.LanguagePractice.Events;
 using Domain.Shared.Events;
 using System.Text.Json;
 
@@ -25,8 +24,6 @@ public class EventDispatcher
     {
         // Register all event types here
         _eventTypes["UserCreatedEvent"] = typeof(UserCreatedEvent);
-        _eventTypes["LanguageSubmissionCreatedEvent"] = typeof(LanguageSubmissionCreatedEvent);
-        _eventTypes["LanguageSubmissionAnalysedEvent"] = typeof(LanguageSubmissionAnalysedEvent);
     }
 
     /// <summary>

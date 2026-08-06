@@ -12,14 +12,14 @@ export default function RegistrationPage() {
 
     useEffect(() => {
         if (isAuthenticated) {
-            navigate("/", { replace: true });
+            navigate("/auth/intro", { replace: true });
         }
     }, [isAuthenticated, navigate]);
 
     const onSubmit = async (formData: LoginSchema) => {
         const response = await mutation.mutateAsync(formData);
         await logIn(response.token);
-        navigate("/", { replace: true });
+        navigate("/auth/intro", { replace: true });
     }
 
     return (

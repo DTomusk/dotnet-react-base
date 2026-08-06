@@ -1,7 +1,7 @@
 ﻿using Application.Auth.Commands;
-using Application.Auth.DTOs;
 using Application.Auth.Handlers;
 using Application.Auth.Interfaces;
+using Application.LanguagePractice.Interfaces;
 using Application.Shared.Interfaces;
 using Domain.Auth.Entities;
 using Domain.Auth.Events;
@@ -17,6 +17,7 @@ public class RegisterUserCommandHandlerTests
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
     private readonly ITokenGenerator _tokenGenerator;
+    private readonly ILanguageLearnerRepository _languageLearnerRepository;
     private readonly IDomainEventPublisher _eventPublisher;
     private readonly IUnitOfWork _unitOfWork;
 
@@ -27,9 +28,10 @@ public class RegisterUserCommandHandlerTests
         _userRepository = Substitute.For<IUserRepository>();
         _passwordHasher = Substitute.For<IPasswordHasher>();
         _tokenGenerator = Substitute.For<ITokenGenerator>();
+        _languageLearnerRepository = Substitute.For<ILanguageLearnerRepository>();
         _eventPublisher = Substitute.For<IDomainEventPublisher>();
         _unitOfWork = Substitute.For<IUnitOfWork>();
-        _handler = new RegisterUserCommandHandler(_userRepository, _passwordHasher, _tokenGenerator, _eventPublisher, _unitOfWork);
+        _handler = new RegisterUserCommandHandler(_userRepository, _passwordHasher, _tokenGenerator, _languageLearnerRepository, _eventPublisher, _unitOfWork);
     }
 
     [Fact]

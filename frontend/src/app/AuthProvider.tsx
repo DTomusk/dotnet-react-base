@@ -1,6 +1,7 @@
 import { createContext, useCallback, useEffect, useState, type ReactNode } from "react";
 import { clearToken, getToken, setToken } from "../lib/auth/token";
 import { registerUnauthorizedHandler } from "../lib/auth/session";
+import { useQueryClient } from "@tanstack/react-query";
 
 type AuthContextValue = {
     isAuthenticated: boolean;
@@ -12,6 +13,7 @@ export const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [isAuthenticated, setIsAuthenticated] = useState(() => Boolean(getToken()));
+    const queryClient = useQueryClient();
 
     const logIn = useCallback((token: string) => {
         setToken(token);
@@ -20,6 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const logOut = useCallback(() => {
         clearToken();
+        queryClient.clear();
         setIsAuthenticated(false);
     }, []);
 

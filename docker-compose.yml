@@ -1,7 +1,7 @@
 services:
   db: 
     image: postgres:18.1
-    container_name: language-app-db
+    container_name: app-db
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -24,32 +24,6 @@ services:
       - "5050:80"
     depends_on:
       - db
-
-  python:
-    build:
-      context: ./python
-      dockerfile: ./Dockerfile
-    container_name: language-app-python
-    ports:
-      - "8000:8000"
-
-  api:
-    build:
-      context: ./server
-      dockerfile: ./api/Dockerfile
-    container_name: language-app-api
-    depends_on: 
-      db:
-        condition: service_healthy
-      python:
-        condition: service_healthy
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      ASPNETCORE_URLS: http://+:8080
-      ConnectionStrings__DATABASE_URL: Host=db;Port=5432;Database=server_db;Username=user;Password=password
-      ExternalApis__LanguageAnalysis__BaseUrl: http://python:8000/
-    ports:
-      - "8080:8080"
 
 volumes:
   server_db_data:

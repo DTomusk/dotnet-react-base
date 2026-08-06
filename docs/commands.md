@@ -3,14 +3,11 @@
 
 `dotnet ef database update --context AppDbContext --project Infrastructure --startup-project Api`
 
-# Python 
-`uvicorn app.main:app --port 8000`
-
 # Frontend tests 
 `pnpm vitest`
 
 # Fly deployment
-For creating a new fly app: `fly launch --name language-api --no-deploy`, then edit .toml file manually to add in `Dockerfile`
+For creating a new fly app: `fly launch --name api --no-deploy`, then edit .toml file manually to add in `Dockerfile`
 
 For deploying a specific fly app: `fly deploy -c ../fly/api.toml` run this from the specific project directory (e.g. `./server` in this case) to prevent needlessly sending files to the builder.
 

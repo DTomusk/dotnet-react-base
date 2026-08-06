@@ -18,7 +18,7 @@ public class GetActiveLanguageStatsQueryHandler : IQueryHandler<GetActiveLanguag
     {
         var languageCode = await _languageLearnerQueryService.GetUserLanguageAsync(query.UserId, cancellationToken);
         if (languageCode == null)
-            throw new InvalidOperationException("User has no active language.");
+            return new LanguageStatsResponse("", 0, 0);
 
         var languageStats = await _languageLearnerQueryService.GetLanguageStatsAsync(query.UserId, languageCode.Value, cancellationToken);
         // Include today

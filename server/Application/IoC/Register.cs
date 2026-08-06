@@ -12,7 +12,6 @@ using Application.Submissions.Commands;
 using Application.Submissions.DTOs;
 using Application.Submissions.Handlers;
 using Application.Submissions.Queries;
-using Domain.Auth.Events;
 using Domain.LanguagePractice.Events;
 using Domain.LanguagePractice.ValueObjects;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,7 +36,6 @@ public static class Register
 
     public static IServiceCollection AddEventHandlers(this IServiceCollection services)
     {
-        services.AddScoped<IEventHandler<UserCreatedEvent>, UserCreatedEventHandler>();
         services.AddScoped<IEventHandler<LanguageSubmissionCreatedEvent>, SubmissionCreatedEventHandler>();
         services.AddScoped<IEventHandler<LanguageSubmissionAnalysedEvent>, SubmissionAnalysedEventHandler>();
 

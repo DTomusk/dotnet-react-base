@@ -22,3 +22,7 @@ The address for an internal service is `http://<service name>.internal:<port>/`
 
 E.g. the address of the python service is `http://language-python-silver-grove-876.internal:8000/`
 
+If the secret is an array, append __<index> to the secret e.g. 
+
+`Cors__AllowedOrigins__0`
+

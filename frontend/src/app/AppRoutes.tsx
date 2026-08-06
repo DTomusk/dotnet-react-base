@@ -6,6 +6,7 @@ import AppLayout from '../layout/AppLayout'
 import { createBrowserRouter } from 'react-router-dom'
 import ProtectedLayout from './ProtectedLayout'
 import PracticePage from '../pages/PracticePage'
+import IntroPage from '../pages/IntroPage'
 
 export const router = createBrowserRouter([
     {
@@ -39,6 +40,10 @@ export const router = createBrowserRouter([
                 path: 'register',
                 element: <RegistrationPage />
             },
+            {
+                path: 'intro',
+                element: <IntroPage />
+            }
         ]
     }
 ])

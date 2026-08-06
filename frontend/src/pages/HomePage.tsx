@@ -1,50 +1,10 @@
 import { Button, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useLanguageStats } from "../features/languagePractice/hooks/useLanguageStats";
-import Spinner from "../components/Spinner";
-import Alert from "@mui/material/Alert";
-import LanguageSelector from "../features/languagePractice/components/LanguageSelector";
-import { useTranslation } from "react-i18next";
-import { useLanguageSelection } from "../features/languagePractice/hooks/useLanguageSelection";
 
 export default function HomePage() {
-    const navigate = useNavigate();
-    const { t } = useTranslation(["common"]);
-    
+    const navigate = useNavigate();    
     const { data: languageStats } = useLanguageStats();
-
-    const {
-        activeLanguage,
-        error,
-        languageItems,
-        selectedLanguage,
-        setSelectedLanguage,
-        confirmLanguage,
-        isLoading,
-        isLoadingLanguages,
-        isSubmitting,
-    } = useLanguageSelection();
-
-    if (isLoading) {
-        return <Spinner aria-label={t("common:loading")} />;
-    }
-
-    if (error) {
-        return <Alert severity="error">{t("common:error")}: {error.message}</Alert>;
-    }
-
-    if (!activeLanguage) {
-        return (
-            <LanguageSelector
-                items={languageItems}
-                isLoading={isLoadingLanguages}
-                isSubmitting={isSubmitting}
-                selectedLanguage={selectedLanguage}
-                onLanguageChange={setSelectedLanguage}
-                onConfirm={confirmLanguage}
-            />
-        );
-    }
 
     return (
         <Stack spacing={5} 

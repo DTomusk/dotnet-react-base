@@ -5,7 +5,6 @@ import HomePage from '../pages/HomePage'
 import AppLayout from '../layout/AppLayout'
 import { createBrowserRouter } from 'react-router-dom'
 import ProtectedLayout from './ProtectedLayout'
-import PracticePage from '../pages/PracticePage'
 
 export const router = createBrowserRouter([
     {
@@ -19,10 +18,6 @@ export const router = createBrowserRouter([
                         index: true,
                         element: <HomePage />
                     },
-                    {
-                        path: 'practice',
-                        element: <PracticePage />
-                    }
                 ]
             }
         ]

@@ -1,7 +1,6 @@
 import { AppBar, Button, Toolbar } from "@mui/material";
 import { useAuth } from "../features/auth/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import NavLanguageSelect from "./NavLanguageSelect";
 
 export default function NavBar() {
     const { isAuthenticated, logOut } = useAuth();
@@ -13,7 +12,6 @@ export default function NavBar() {
                 {isAuthenticated ? (
                     <>
                         <Button color="inherit" onClick={logOut}>Logout</Button>
-                        <NavLanguageSelect />
                     </>
                 ) : (
                     <Button onClick={() => navigate("auth/login", { replace: true })}>Login</Button>

@@ -1,11 +1,6 @@
 name: CD
 
 on: 
-    # Only trigger cd once ci has completed successfully on main branch
-    workflow_run:
-        workflows: ["CI"]
-        types: [completed]
-        branches: [main]
     workflow_dispatch:
 
 permissions:
@@ -72,18 +67,4 @@ jobs:
         - run: flyctl deploy -c ../fly/worker.toml --remote-only
           env:
             FLY_API_TOKEN: ${{ secrets.WORKER_CD_TOKEN }}
-
-    deploy-python:
-        name: Deploy Python to Fly
-        runs-on: ubuntu-latest
-        needs: migrate
-        defaults:
-          run:
-            working-directory: ./python
-        steps:
-        - uses: actions/checkout@v4
-        - uses: superfly/flyctl-actions/setup-flyctl@master
-        - run: flyctl deploy -c ../fly/python.toml --remote-only
-          env:
-            FLY_API_TOKEN: ${{ secrets.PYTHON_CD_TOKEN }}
 

@@ -1,6 +1,5 @@
 ﻿using Api.Auth.Validators;
 using Api.Shared.RateLimiting;
-using Api.Submissions.Validators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Infrastructure.Auth.IoC;
@@ -18,7 +17,6 @@ public static class Register
     {
         // FluentValidation
         services.AddFluentValidationAutoValidation();
-        services.AddValidatorsFromAssemblyContaining<CreateSubmissionRequestValidator>();
         services.AddValidatorsFromAssemblyContaining<RegisterUserRequestValidator>();
 
         // JWT auth
@@ -32,7 +30,7 @@ public static class Register
         })
         .AddJwtBearer(options =>
         {
-            options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+            options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
                 ValidateAudience = true,
